@@ -1,143 +1,169 @@
-import PropTypes from 'prop-types';
-import './WavyFunnel.css';
+import PropTypes from "prop-types";
+import "./WavyFunnel.css";
 
 const WavyFunnel = ({
   data = [],
-  width = 400,
-  height = 500,
+  width = 500,
+  height = 400,
   waveAmplitude = 15,
   waveFrequency = 3,
-  leftMargin = 50,
-  segmentGap = 4,
-  animated = true
+  leftMargin = 30,
+  segmentGap = 0,
+  animated = true,
 }) => {
   if (!data || data.length === 0) {
-    return (
-      <div className="wavy-funnel-empty">
-        No hay datos para mostrar
-      </div>
-    );
+    return <div className="wavy-funnel-empty">No hay datos para mostrar</div>;
   }
 
-  const totalValue = data.reduce((sum, item) => sum + item.value, 0);
+  const padding = { right: 140 };
+  const funnelWidth = width - leftMargin - padding.right;
   const segmentHeight = (height - (data.length - 1) * segmentGap) / data.length;
 
-  const generateWavyPath = (startY, endY, startWidth, endWidth) => {
+  const generateWavyPath = (
+    startY,
+    endY,
+    startWidth,
+    endWidth,
+    totalHeight
+  ) => {
     const leftX = leftMargin;
-    
+
     const startLeftX = leftX;
     const endLeftX = leftX;
     const endRightX = leftX + endWidth;
+
+    // Calculate wave offset at exact Y positions for continuity
+    const getWaveOffset = (y) => {
+      return (
+        Math.sin((y / totalHeight) * Math.PI * waveFrequency) * waveAmplitude
+      );
+    };
+
+    // Get width at a specific Y position
+    const getWidthAtY = (y) => {
+      const progress = (y - startY) / (endY - startY);
+      return startWidth + (endWidth - startWidth) * progress;
+    };
 
     // Left side - straight line (M and L)
     let path = `M ${startLeftX} ${startY}`;
     path += ` L ${endLeftX} ${endY}`;
 
-    // Bottom edge
-    path += ` L ${endRightX} ${endY}`;
+    // Bottom edge - with wave offset at end
+    const endWaveOffset = getWaveOffset(endY);
+    path += ` L ${endRightX + endWaveOffset} ${endY}`;
 
-    // Right side - wavy curve using quadratic bezier (Q)
-    const segments = 10;
+    // Right side - smooth wavy curve
+    const segments = 20;
     const segHeight = (endY - startY) / segments;
-    
+
     for (let i = segments - 1; i >= 0; i--) {
-      const y1 = startY + (i + 1) * segHeight;
-      const y0 = startY + i * segHeight;
-      
-      // Calculate width at each y position (linear interpolation for funnel effect)
-      const progress0 = i / segments;
-      const x0 = leftX + startWidth + (endWidth - startWidth) * progress0;
-      
-      // Apply sinusoidal wave to the right edge
-      const waveOffset0 = Math.sin((y0 / height) * Math.PI * waveFrequency) * waveAmplitude;
-      
-      const midY = (y0 + y1) / 2;
-      const midWaveOffset = Math.sin((midY / height) * Math.PI * waveFrequency) * waveAmplitude;
-      const progress1 = (i + 1) / segments;
-      const x1 = leftX + startWidth + (endWidth - startWidth) * progress1;
-      const midX = (x0 + x1) / 2 + midWaveOffset;
-      
-      // Quadratic curve for smooth wave effect
-      path += ` Q ${midX} ${midY} ${x0 + waveOffset0} ${y0}`;
+      const y = startY + i * segHeight;
+      const widthAtY = getWidthAtY(y);
+      const waveOffset = getWaveOffset(y);
+      const x = leftX + widthAtY + waveOffset;
+
+      path += ` L ${x} ${y}`;
     }
 
-    // Top edge back to start
-    path += ` L ${startLeftX} ${startY}`;
-    path += ' Z';
+    // Close path
+    path += " Z";
 
     return path;
   };
 
   const getSegmentDimensions = (index) => {
-    const maxWidth = width - leftMargin - 20;
-    const minWidth = maxWidth * 0.3;
-    
+    const maxWidth = funnelWidth;
+    const minWidth = maxWidth * 0.15;
+
     const startWidth = maxWidth - (index / data.length) * (maxWidth - minWidth);
-    const endWidth = maxWidth - ((index + 1) / data.length) * (maxWidth - minWidth);
-    
+    const endWidth =
+      maxWidth - ((index + 1) / data.length) * (maxWidth - minWidth);
+
     const startY = index * (segmentHeight + segmentGap);
     const endY = startY + segmentHeight;
-    
+
     return { startWidth, endWidth, startY, endY };
   };
 
   return (
-    <div className={`wavy-funnel-container ${animated ? 'animated' : ''}`}>
-      <svg 
-        width={width} 
-        height={height} 
+    <div className={`wavy-funnel-container ${animated ? "animated" : ""}`}>
+      <svg
+        width={width}
+        height={height}
         className="wavy-funnel-svg"
         viewBox={`0 0 ${width} ${height}`}
       >
-        <defs>
-          {data.map((item, index) => (
-            <linearGradient
-              key={`gradient-${index}`}
-              id={`funnel-gradient-${index}`}
-              x1="0%"
-              y1="0%"
-              x2="100%"
-              y2="0%"
-            >
-              <stop offset="0%" stopColor={item.color} stopOpacity="0.9" />
-              <stop offset="100%" stopColor={item.color} stopOpacity="0.6" />
-            </linearGradient>
-          ))}
-        </defs>
-        
+        {/* Render all segment paths first */}
         {data.map((item, index) => {
-          const { startWidth, endWidth, startY, endY } = getSegmentDimensions(index);
-          const path = generateWavyPath(startY, endY, startWidth, endWidth);
-          const percentage = ((item.value / totalValue) * 100).toFixed(1);
-          
+          const { startWidth, endWidth, startY, endY } =
+            getSegmentDimensions(index);
+          const path = generateWavyPath(
+            startY,
+            endY,
+            startWidth,
+            endWidth,
+            height
+          );
+
           return (
-            <g key={index} className="funnel-segment">
-              <path
-                d={path}
-                fill={`url(#funnel-gradient-${index})`}
-                className="funnel-path"
-                style={{
-                  animationDelay: animated ? `${index * 0.1}s` : '0s'
-                }}
-              />
+            <path
+              key={`path-${index}`}
+              d={path}
+              fill={item.color}
+              className="funnel-path"
+              style={{
+                animationDelay: animated ? `${index * 0.1}s` : "0s",
+              }}
+            />
+          );
+        })}
+
+        {/* Render separator lines and labels */}
+        {data.map((item, index) => {
+          const { endWidth, endY } = getSegmentDimensions(index);
+          const labelX = width - padding.right + 10;
+          const isLastSegment = index === data.length - 1;
+
+          // Calculate wave offset at endY to align line with wavy edge
+          const waveOffset =
+            Math.sin((endY / height) * Math.PI * waveFrequency) * waveAmplitude;
+
+          // Line starts at the right edge of the segment with wave offset
+          const lineStartX = leftMargin + endWidth + waveOffset;
+
+          // Labels positioned above the line (endY is the line position)
+          // Value above, label below value
+          const valueY = endY - 22;
+          const labelY = endY - 6;
+
+          return (
+            <g key={`labels-${index}`} className="funnel-segment">
+              {/* Value number - above */}
               <text
-                x={leftMargin + startWidth / 2}
-                y={startY + segmentHeight / 2}
-                className="funnel-label"
-                textAnchor="middle"
-                dominantBaseline="middle"
+                x={labelX}
+                y={valueY}
+                className="funnel-value-right"
+                style={{ fill: item.color }}
               >
+                {item.value.toLocaleString()}
+              </text>
+              {/* Label text - below value */}
+              <text x={labelX} y={labelY} className="funnel-label-right">
                 {item.label}
               </text>
-              <text
-                x={leftMargin + startWidth / 2}
-                y={startY + segmentHeight / 2 + 18}
-                className="funnel-value"
-                textAnchor="middle"
-                dominantBaseline="middle"
-              >
-                {item.value.toLocaleString()} ({percentage}%)
-              </text>
+              {/* Horizontal connector line at segment separation, skip for last segment */}
+              {!isLastSegment && (
+                <line
+                  x1={lineStartX}
+                  y1={endY}
+                  x2={width - 10}
+                  y2={endY}
+                  stroke="#9ca3af"
+                  strokeWidth="1"
+                  className="connector-line"
+                />
+              )}
             </g>
           );
         })}
@@ -151,7 +177,7 @@ WavyFunnel.propTypes = {
     PropTypes.shape({
       label: PropTypes.string.isRequired,
       value: PropTypes.number.isRequired,
-      color: PropTypes.string.isRequired
+      color: PropTypes.string.isRequired,
     })
   ),
   width: PropTypes.number,
@@ -160,7 +186,7 @@ WavyFunnel.propTypes = {
   waveFrequency: PropTypes.number,
   leftMargin: PropTypes.number,
   segmentGap: PropTypes.number,
-  animated: PropTypes.bool
+  animated: PropTypes.bool,
 };
 
 export default WavyFunnel;

@@ -8,7 +8,32 @@ Componente React para crear gráficos de embudo con efecto ondulado en SVG.
 - ✅ **Lado derecho ONDULADO/CURVO** - efecto de onda sinusoidal
 - ✅ **Reactivo** - recibe valores y se actualiza automáticamente
 - ✅ **Animaciones suaves** de entrada y hover
+- ✅ **Labels a la derecha** con líneas conectoras horizontales
 - ✅ **ESLint configurado**
+
+## Herramientas y Tecnologías
+
+| Tecnología               | Uso                                              |
+| ------------------------ | ------------------------------------------------ |
+| **React 18.2.0**         | Framework principal para construir la UI         |
+| **Create React App**     | Configuración del proyecto (react-scripts 5.0.1) |
+| **PropTypes**            | Validación de props en componentes               |
+| **@tabler/icons-react**  | Iconos (IconMinus, IconInfoCircle)               |
+| **ESLint**               | Linter para mantener código limpio               |
+| **Google Fonts (Inter)** | Tipografía del proyecto                          |
+
+## Librerías Importadas
+
+```jsx
+// App.jsx
+import WavyFunnel from "./components/WavyFunnel";
+import { IconInfoCircle, IconMinus } from "@tabler/icons-react";
+import "./App.css";
+
+// WavyFunnel.jsx
+import PropTypes from "prop-types";
+import "./WavyFunnel.css";
+```
 
 ## Instalación
 
@@ -27,6 +52,50 @@ npm run build
 
 # Ejecutar linter
 npm run lint
+```
+
+## Ejecutar Localmente
+
+```bash
+# Instalar dependencias
+npm install
+
+# Iniciar servidor de desarrollo
+npm start
+```
+
+Se abrirá en `http://localhost:3000`
+
+## Desplegar en GitHub Pages
+
+1. **Instalar gh-pages:**
+
+```bash
+npm install gh-pages --save-dev
+```
+
+2. **Agregar en `package.json`:**
+
+```json
+{
+  "homepage": "https://JalVargas.github.io/Graficos",
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  }
+}
+```
+
+3. **Desplegar:**
+
+```bash
+npm run deploy
+```
+
+4. **Visualizar en:**
+
+```
+https://JalVargas.github.io/Graficos
 ```
 
 ## Estructura del Proyecto
@@ -52,81 +121,83 @@ npm run lint
 ## Uso del Componente WavyFunnel
 
 ```jsx
-import WavyFunnel from './components/WavyFunnel';
+import WavyFunnel from "./components/WavyFunnel";
 
-const data = [
-  { label: 'Visitantes', value: 10000, color: '#6366f1' },
-  { label: 'Leads', value: 7500, color: '#8b5cf6' },
-  { label: 'Prospectos', value: 5000, color: '#a855f7' },
-  { label: 'Negociaciones', value: 2500, color: '#d946ef' },
-  { label: 'Ventas', value: 1000, color: '#ec4899' }
+// Website Traffic
+const trafficData = [
+  { label: "Sessions", value: 281717, color: "#64a9ab" },
+  { label: "Vehicle Views", value: 112679, color: "#74c4c6" },
+  { label: "TrueLeads", value: 1781, color: "#eab234" },
+];
+
+// Consumer Journey
+const consumerData = [
+  { label: "Total Impressions", value: 473830, color: "#1a5a5c" },
+  { label: "Total Clicks", value: 12429, color: "#3d8a8c" },
+  { label: "Known Shoppers", value: 500, color: "#6ab0b2" },
+  { label: "High Marketing Score", value: 125, color: "#9dd4d6" },
 ];
 
 <WavyFunnel
-  data={data}
-  width={400}
-  height={500}
+  data={trafficData}
+  width={450}
+  height={350}
   waveAmplitude={15}
   waveFrequency={3}
-  leftMargin={50}
-  segmentGap={4}
+  leftMargin={30}
+  segmentGap={0}
   animated={true}
-/>
+/>;
 ```
 
 ## Props
 
-| Prop | Tipo | Default | Descripción |
-|------|------|---------|-------------|
-| `data` | Array | `[]` | Datos del funnel con objetos {label, value, color} |
-| `width` | Number | `400` | Ancho del gráfico |
-| `height` | Number | `500` | Alto del gráfico |
-| `waveAmplitude` | Number | `15` | Amplitud de la onda del lado derecho |
-| `waveFrequency` | Number | `3` | Frecuencia de ondas |
-| `leftMargin` | Number | `50` | Margen del lado recto izquierdo |
-| `segmentGap` | Number | `4` | Espacio entre segmentos |
-| `animated` | Boolean | `true` | Habilitar animaciones |
+| Prop            | Tipo    | Default | Descripción                                        |
+| --------------- | ------- | ------- | -------------------------------------------------- |
+| `data`          | Array   | `[]`    | Datos del funnel con objetos {label, value, color} |
+| `width`         | Number  | `500`   | Ancho del gráfico                                  |
+| `height`        | Number  | `400`   | Alto del gráfico                                   |
+| `waveAmplitude` | Number  | `15`    | Amplitud de la onda del lado derecho               |
+| `waveFrequency` | Number  | `3`     | Frecuencia de ondas                                |
+| `leftMargin`    | Number  | `30`    | Margen del lado recto izquierdo                    |
+| `segmentGap`    | Number  | `0`     | Espacio entre segmentos                            |
+| `animated`      | Boolean | `true`  | Habilitar animaciones                              |
 
 ## Estructura de Datos
 
 ```javascript
 const data = [
   {
-    label: string,  // Etiqueta del segmento
-    value: number,  // Valor numérico
-    color: string   // Color en formato hex (#RRGGBB)
-  }
+    label: string, // Etiqueta del segmento
+    value: number, // Valor numérico
+    color: string, // Color en formato hex (#RRGGBB) o rgba()
+  },
 ];
 ```
 
-## Funcionalidades de la Demo (App.jsx)
+## Técnicas SVG Utilizadas
 
-1. **Estado reactivo** - Los datos del funnel se actualizan automáticamente
-2. **Inputs editables** - Modifica los valores en tiempo real
-3. **Valores aleatorios** - Botón para generar datos aleatorios
-4. **Simulación en tiempo real** - Actualización automática cada 1.5s (7 iteraciones)
-5. **Ejemplo de código** - Muestra cómo usar el componente programáticamente
+- **Path con curvas Bezier** para el borde ondulado
+- **Función sinusoidal** `Math.sin()` para generar la onda continua
+- **Interpolación lineal** para el efecto funnel (ancho decreciente)
+- **Líneas conectoras** alineadas con el borde ondulado
 
 ## Implementación Técnica
 
 - SVG con paths personalizados
 - Lado izquierdo: línea recta (M y L)
-- Lado derecho: curvas cuadráticas (Q) con función sinusoidal
-- Gradientes de color por segmento
-- Efectos hover (translateX y shadow)
-
-## Estilos
-
-- Fondo degradado oscuro (#1a1a2e a #16213e)
-- Cards con glassmorphism (backdrop-filter blur)
-- Botones con gradientes y efectos hover
-- Diseño responsive
+- Lado derecho: líneas con offset sinusoidal para onda continua
+- Gradientes de color por segmento (oscuro a claro)
+- Efectos hover (brightness y scale)
+- Labels posicionados a la derecha con líneas horizontales
 
 ## Dependencias
 
 - react ^18.2.0
 - react-dom ^18.2.0
+- react-scripts ^5.0.1
 - prop-types ^15.8.1
+- @tabler/icons-react ^3.28.1
 - eslint ^8.57.0
 - eslint-plugin-react ^7.34.1
 - eslint-plugin-react-hooks ^4.6.0

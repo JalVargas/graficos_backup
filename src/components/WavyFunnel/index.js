@@ -1,1 +1,1 @@
-export { default } from './WavyFunnel';
+export { default } from "./WavyFunnel";
