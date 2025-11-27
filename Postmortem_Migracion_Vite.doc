@@ -1,0 +1,40 @@
+# Postmortem: Migración de Create React App a Vite
+
+## Introducción
+Durante el desarrollo y mantenimiento del proyecto de gráficos interactivos, se identificó la necesidad de modernizar la infraestructura de construcción y desarrollo. El proyecto originalmente utilizaba Create React App (CRA) como base, pero ante los retos de rendimiento, tiempos de arranque y limitaciones en la personalización, se tomó la decisión de migrar a Vite, una herramienta de bundling y desarrollo moderno para aplicaciones React. El objetivo principal de esta migración fue optimizar la experiencia de desarrollo, reducir los tiempos de build y facilitar la integración de nuevas tecnologías, asegurando así la escalabilidad y mantenibilidad del proyecto a largo plazo.
+
+## Motivos de la migración
+La decisión de migrar de Create React App (CRA) a Vite se fundamentó en los siguientes motivos técnicos y estratégicos:
+
+- **Velocidad de arranque y recarga:** Vite ofrece tiempos de inicio y recarga en caliente (HMR) significativamente más rápidos que CRA, lo que mejora la productividad del equipo de desarrollo.
+- **Mantenimiento y soporte:** CRA ha reducido su ritmo de actualizaciones y soporte, mientras que Vite es una herramienta moderna con una comunidad activa y soporte continuo.
+- **Configuración flexible:** Vite permite una configuración más sencilla y personalizable, facilitando la integración de plugins y ajustes específicos del proyecto.
+- **Mejor experiencia de desarrollo:** La integración nativa de ES Modules y el uso de tecnologías modernas hacen que Vite sea más eficiente y fácil de mantener.
+- **Optimización de builds:** Vite genera bundles de producción más pequeños y optimizados, lo que impacta positivamente en el rendimiento de la aplicación final.
+
+## Errores encontrados durante la migración
+Durante el proceso de migración de CRA a Vite, se presentaron varios desafíos técnicos:
+
+- **Problemas con ESLint:** La integración de ESLint en Create React App (CRA) resultaba inestable y generaba errores frecuentes, especialmente al intentar personalizar reglas o actualizar dependencias. En ocasiones, el linter no detectaba correctamente los cambios o arrojaba advertencias inconsistentes.
+- **Limitaciones de react-scripts:** El paquete `react-scripts` de CRA dificultaba la personalización avanzada del entorno de desarrollo y build. Muchos errores surgían al intentar modificar configuraciones internas, lo que ralentizaba el flujo de trabajo.
+- **Conflictos de dependencias:** Al migrar, se detectaron incompatibilidades entre versiones de paquetes, especialmente en aquellas relacionadas con ESLint, plugins de React y herramientas de formateo.
+- **Scripts de build y desarrollo:** Fue necesario adaptar los scripts de inicio, build y test, ya que la estructura y comandos de Vite difieren de los de CRA.
+- **Ajustes en imports y rutas:** Algunos imports y rutas de archivos debieron ser modificados para alinearse con la resolución de módulos de Vite.
+
+## Soluciones aplicadas
+Para superar los problemas detectados durante la migración, se implementaron las siguientes soluciones:
+
+- **Reconfiguración de ESLint:** Se eliminó la configuración heredada de CRA y se creó un archivo de configuración de ESLint adaptado a Vite, asegurando compatibilidad con las versiones más recientes de los plugins y reglas necesarias para React.
+- **Sustitución de react-scripts:** Se eliminaron completamente los scripts y dependencias de CRA, reemplazándolos por los comandos y configuraciones nativas de Vite (`vite.config.js`), lo que permitió mayor flexibilidad y control.
+- **Actualización y alineación de dependencias:** Se revisaron y actualizaron todas las dependencias, resolviendo conflictos de versiones y asegurando la compatibilidad entre ESLint, Prettier, React y Vite.
+- **Adaptación de scripts y estructura:** Se ajustaron los scripts de npm (`dev`, `build`, `preview`, `lint`) y se reorganizó la estructura de archivos para alinearse con las mejores prácticas recomendadas por Vite.
+- **Pruebas y validación continua:** Se realizaron pruebas exhaustivas tras cada cambio, validando el correcto funcionamiento del linter, el entorno de desarrollo y la build de producción.
+
+## Conclusiones y recomendaciones
+La migración de Create React App a Vite resultó ser una decisión acertada para el proyecto, permitiendo una experiencia de desarrollo más ágil, builds más rápidas y una mayor facilidad de mantenimiento. Los principales aprendizajes y recomendaciones son:
+
+- Evaluar periódicamente las herramientas del stack para asegurar que se adapten a las necesidades actuales del proyecto.
+- Priorizar herramientas con comunidades activas y soporte continuo, como Vite.
+- Mantener las dependencias actualizadas y documentar cualquier personalización relevante en la configuración.
+- Realizar pruebas exhaustivas tras cada cambio estructural y automatizar la validación de calidad de código (linting y formateo).
+- Documentar el proceso de migración y los problemas encontrados para facilitar futuras transiciones tecnológicas.

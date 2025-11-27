@@ -13,26 +13,26 @@ Componente React para crear gráficos de embudo con efecto ondulado en SVG.
 
 ## Herramientas y Tecnologías
 
-| Tecnología               | Uso                                              |
-| ------------------------ | ------------------------------------------------ |
-| **React 18.2.0**         | Framework principal para construir la UI         |
-| **Create React App**     | Configuración del proyecto (react-scripts 5.0.1) |
-| **PropTypes**            | Validación de props en componentes               |
-| **@tabler/icons-react**  | Iconos (IconMinus, IconInfoCircle)               |
-| **ESLint**               | Linter para mantener código limpio               |
-| **Google Fonts (Inter)** | Tipografía del proyecto                          |
+| Tecnología               | Uso                                           |
+| ------------------------ | --------------------------------------------- |
+| **React 18.2.0**         | Framework principal para construir la UI      |
+| **Vite**                 | Bundler y servidor de desarrollo ultrarrápido |
+| **PropTypes**            | Validación de props en componentes            |
+| **@tabler/icons-react**  | Iconos (IconMinus, IconInfoCircle)            |
+| **ESLint**               | Linter para mantener código limpio            |
+| **Google Fonts (Inter)** | Tipografía del proyecto                       |
 
 ## Librerías Importadas
 
 ```jsx
 // App.jsx
-import WavyFunnel from "./components/WavyFunnel";
-import { IconInfoCircle, IconMinus } from "@tabler/icons-react";
-import "./App.css";
+import WavyFunnel from './components/WavyFunnel';
+import { IconInfoCircle, IconMinus } from '@tabler/icons-react';
+import './App.css';
 
 // WavyFunnel.jsx
-import PropTypes from "prop-types";
-import "./WavyFunnel.css";
+import PropTypes from 'prop-types';
+import './WavyFunnel.css';
 ```
 
 ## Instalación
@@ -45,10 +45,13 @@ npm install
 
 ```bash
 # Iniciar en modo desarrollo
-npm start
+npm run dev
 
 # Construir para producción
 npm run build
+
+# Previsualizar build de producción
+npm run preview
 
 # Ejecutar linter
 npm run lint
@@ -61,10 +64,10 @@ npm run lint
 npm install
 
 # Iniciar servidor de desarrollo
-npm start
+npm run dev
 ```
 
-Se abrirá en `http://localhost:3000`
+Se abrirá en `http://localhost:5173` (puerto por defecto de Vite)
 
 ## Desplegar en GitHub Pages
 
@@ -121,21 +124,21 @@ https://JalVargas.github.io/Graficos
 ## Uso del Componente WavyFunnel
 
 ```jsx
-import WavyFunnel from "./components/WavyFunnel";
+import WavyFunnel from './components/WavyFunnel';
 
 // Website Traffic
 const trafficData = [
-  { label: "Sessions", value: 281717, color: "#64a9ab" },
-  { label: "Vehicle Views", value: 112679, color: "#74c4c6" },
-  { label: "TrueLeads", value: 1781, color: "#eab234" },
+  { label: 'Sessions', value: 281717, color: '#64a9ab' },
+  { label: 'Vehicle Views', value: 112679, color: '#74c4c6' },
+  { label: 'TrueLeads', value: 1781, color: '#eab234' },
 ];
 
 // Consumer Journey
 const consumerData = [
-  { label: "Total Impressions", value: 473830, color: "#1a5a5c" },
-  { label: "Total Clicks", value: 12429, color: "#3d8a8c" },
-  { label: "Known Shoppers", value: 500, color: "#6ab0b2" },
-  { label: "High Marketing Score", value: 125, color: "#9dd4d6" },
+  { label: 'Total Impressions', value: 473830, color: '#1a5a5c' },
+  { label: 'Total Clicks', value: 12429, color: '#3d8a8c' },
+  { label: 'Known Shoppers', value: 500, color: '#6ab0b2' },
+  { label: 'High Marketing Score', value: 125, color: '#9dd4d6' },
 ];
 
 <WavyFunnel
@@ -191,13 +194,35 @@ const data = [
 - Efectos hover (brightness y scale)
 - Labels posicionados a la derecha con líneas horizontales
 
-## Dependencias
+## Dependencias principales
 
 - react ^18.2.0
 - react-dom ^18.2.0
-- react-scripts ^5.0.1
+- vite ^4.x
 - prop-types ^15.8.1
-- @tabler/icons-react ^3.28.1
-- eslint ^8.57.0
-- eslint-plugin-react ^7.34.1
+- @tabler/icons-react ^3.35.0
+- recharts ^3.5.0
+- eslint ^8.57.1
+- eslint-plugin-react ^7.37.5
 - eslint-plugin-react-hooks ^4.6.0
+- prettier ^3.7.1
+
+## Linting y Formato Automático
+
+Este proyecto integra **ESLint** y **Prettier** para mantener el código limpio y consistente.
+
+- El archivo `.eslintrc.cjs` ya incluye la configuración para Prettier junto con las reglas recomendadas de React.
+- El archivo `.prettierrc` define las reglas de formato (comillas simples, punto y coma, ancho de línea, etc.).
+- Puedes ejecutar el linter con:
+
+```bash
+npm run lint
+```
+
+Para corregir automáticamente los problemas de formato, puedes usar:
+
+```bash
+npx eslint src --fix
+```
+
+> **Nota:** Si tu editor soporta ESLint y Prettier, activa las extensiones para ver los errores y advertencias en tiempo real.

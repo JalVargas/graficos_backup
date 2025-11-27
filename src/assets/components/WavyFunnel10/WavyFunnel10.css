@@ -1,0 +1,96 @@
+.wavy-funnel-10-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px 0 rgba(68, 153, 149, 0.07);
+  transition:
+    box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+}
+
+.wavy-funnel-10-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px 0 rgba(68, 153, 149, 0.07);
+  position: relative;
+  z-index: 1;
+}
+
+.funnel-10-path {
+  transition:
+    box-shadow 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+  transform-origin: left center;
+  outline: none;
+}
+
+.funnel-10-path:hover,
+.funnel-10-path:focus-visible,
+.funnel-10-path:active {
+  filter: brightness(1.12) drop-shadow(0 4px 18px rgba(68, 153, 149, 0.22));
+  transform: scaleX(1.15) scaleY(1.11) translateX(10px) translateY(-3px)
+    skewY(-2deg);
+  box-shadow:
+    0 10px 32px 0 rgba(68, 153, 149, 0.18),
+    0 2px 8px 0 rgba(0, 0, 0, 0.1);
+  z-index: 3;
+}
+
+.funnel-10-segment {
+  transition: opacity 0.3s ease;
+}
+
+.funnel-10-value-right {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-anchor: start;
+}
+
+.funnel-10-label-right {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  fill: #6b7280;
+  text-anchor: start;
+}
+
+.connector-10-line {
+  stroke-dasharray: none;
+}
+
+.wavy-funnel-10-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: #6b7280;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Animation for segments */
+.wavy-funnel-10-container.animated .funnel-10-path {
+  animation: fadeInSlide10 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInSlide10 {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
