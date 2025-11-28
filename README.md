@@ -9,7 +9,6 @@ Componente React para crear gráficos de embudo con efecto ondulado en SVG.
 - ✅ **Reactivo** - recibe valores y se actualiza automáticamente
 - ✅ **Animaciones suaves** de entrada y hover
 - ✅ **Labels a la derecha** con líneas conectoras horizontales
-- ✅ **ESLint configurado**
 
 ## Herramientas y Tecnologías
 
@@ -18,8 +17,7 @@ Componente React para crear gráficos de embudo con efecto ondulado en SVG.
 | **React 18.2.0**         | Framework principal para construir la UI      |
 | **Vite**                 | Bundler y servidor de desarrollo ultrarrápido |
 | **PropTypes**            | Validación de props en componentes            |
-| **@tabler/icons-react**  | Iconos (IconMinus, IconInfoCircle)            |
-| **ESLint**               | Linter para mantener código limpio            |
+| **@tabler/icons-react**  | Iconos (IconMinus, IconInfoCircle)            |           |
 | **Google Fonts (Inter)** | Tipografía del proyecto                       |
 
 ## Librerías Importadas
@@ -53,9 +51,6 @@ npm run build
 # Previsualizar build de producción
 npm run preview
 
-# Ejecutar linter
-npm run lint
-```
 
 ## Ejecutar Localmente
 
@@ -202,27 +197,4 @@ const data = [
 - prop-types ^15.8.1
 - @tabler/icons-react ^3.35.0
 - recharts ^3.5.0
-- eslint ^8.57.1
-- eslint-plugin-react ^7.37.5
-- eslint-plugin-react-hooks ^4.6.0
 - prettier ^3.7.1
-
-## Linting y Formato Automático
-
-Este proyecto integra **ESLint** y **Prettier** para mantener el código limpio y consistente.
-
-- El archivo `.eslintrc.cjs` ya incluye la configuración para Prettier junto con las reglas recomendadas de React.
-- El archivo `.prettierrc` define las reglas de formato (comillas simples, punto y coma, ancho de línea, etc.).
-- Puedes ejecutar el linter con:
-
-```bash
-npm run lint
-```
-
-Para corregir automáticamente los problemas de formato, puedes usar:
-
-```bash
-npx eslint src --fix
-```
-
-> **Nota:** Si tu editor soporta ESLint y Prettier, activa las extensiones para ver los errores y advertencias en tiempo real.
