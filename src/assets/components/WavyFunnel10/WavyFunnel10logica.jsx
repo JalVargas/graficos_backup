@@ -76,7 +76,7 @@ export const WavyFunnel10logica = () => {
                   width={520}
                   height={400}
                   waveAmplitude={15}
-                  waveFrequency={6}
+                  waveFrequency={8}
                   leftMargin={30}
                   segmentGap={0}
                   animated={true}

@@ -1,16 +1,16 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import './WavyFunnel10.css';
+import React from "react";
+import PropTypes from "prop-types";
+import "./WavyFunnel10.css";
 
 const defaultColors = [
-  '#449995', // Teal (Sessions)
-  '#86C5A9', // Light Green (Vehicle Views)
-  '#EACD6D', // Yellow (True Leads)
-  '#009B96', // Dark Teal
-  '#DC5C1E', // Orange
-  '#F1883C', // Light Orange
-  '#71C7A7', // Green
-  '#EAB235', // Gold
+  "#449995", // Teal (Sessions)
+  "#86C5A9", // Light Green (Vehicle Views)
+  "#EACD6D", // Yellow (True Leads)
+  "#009B96", // Dark Teal
+  "#DC5C1E", // Orange
+  "#F1883C", // Light Orange
+  "#71C7A7", // Green
+  "#EAB235", // Gold
 ];
 
 const WavyFunnel10 = ({
@@ -38,7 +38,7 @@ const WavyFunnel10 = ({
     endY,
     startWidth,
     endWidth,
-    totalHeight,
+    totalHeight
   ) => {
     const leftX = leftMargin;
 
@@ -68,26 +68,41 @@ const WavyFunnel10 = ({
     let path = `M ${startLeftX} ${startY}`;
     path += ` L ${endLeftX} ${endY}`;
 
-    // Bottom edge - with wave offset at end
-    const endWaveOffset = getWaveOffset(endY);
-    path += ` L ${endRightX + endWaveOffset} ${endY}`;
+    // Si es el último segmento, el borde derecho debe coincidir con la onda
+    if (endY === totalHeight) {
+      // Bottom edge - con onda completa
+      const endWaveOffset = getWaveOffset(endY);
+      path += ` L ${endRightX + endWaveOffset} ${endY}`;
 
-    // Right side - smooth wavy curve
-    const segments = 20;
-    const segHeight = (endY - startY) / segments;
+      // Right side - curva ondulada igual que los demás
+      const segments = 20;
+      const segHeight = (endY - startY) / segments;
+      for (let i = segments - 1; i >= 0; i--) {
+        const y = startY + i * segHeight;
+        const widthAtY = getWidthAtY(y);
+        const waveOffset = getWaveOffset(y);
+        const x = leftX + widthAtY + waveOffset;
+        path += ` L ${x} ${y}`;
+      }
+    } else {
+      // Bottom edge - with wave offset at end
+      const endWaveOffset = getWaveOffset(endY);
+      path += ` L ${endRightX + endWaveOffset} ${endY}`;
 
-    for (let i = segments - 1; i >= 0; i--) {
-      const y = startY + i * segHeight;
-      const widthAtY = getWidthAtY(y);
-      const waveOffset = getWaveOffset(y);
-      const x = leftX + widthAtY + waveOffset;
+      // Right side - smooth wavy curve
+      const segments = 20;
+      const segHeight = (endY - startY) / segments;
 
-      path += ` L ${x} ${y}`;
+      for (let i = segments - 1; i >= 0; i--) {
+        const y = startY + i * segHeight;
+        const widthAtY = getWidthAtY(y);
+        const waveOffset = getWaveOffset(y);
+        const x = leftX + widthAtY + waveOffset;
+        path += ` L ${x} ${y}`;
+      }
     }
-
     // Close path
-    path += ' Z';
-
+    path += " Z";
     return path;
   };
 
@@ -95,8 +110,8 @@ const WavyFunnel10 = ({
     const maxWidth = funnelWidth;
     const minWidth = maxWidth * 0.08;
 
-    const startWidth = maxWidth - (index / data.length) * (maxWidth - minWidth);
-    const endWidth =
+    let startWidth = maxWidth - (index / data.length) * (maxWidth - minWidth);
+    let endWidth =
       maxWidth - ((index + 1) / data.length) * (maxWidth - minWidth);
 
     const startY = index * (segmentHeight + segmentGap);
@@ -116,7 +131,7 @@ const WavyFunnel10 = ({
     waveFrequency || Math.max(4, Math.round(data.length * 1.1));
 
   return (
-    <div className={`wavy-funnel-10-container ${animated ? 'animated' : ''}`}>
+    <div className={`wavy-funnel-10-container ${animated ? "animated" : ""}`}>
       <svg
         width={width}
         height={height}
@@ -132,7 +147,7 @@ const WavyFunnel10 = ({
             endY,
             startWidth,
             endWidth,
-            height,
+            height
           );
 
           return (
@@ -142,7 +157,7 @@ const WavyFunnel10 = ({
               fill={item.color}
               className="funnel-10-path"
               style={{
-                animationDelay: animated ? `${index * 0.1}s` : '0s',
+                animationDelay: animated ? `${index * 0.1}s` : "0s",
               }}
             />
           );
@@ -159,8 +174,7 @@ const WavyFunnel10 = ({
           const dynamicAmplitude = waveAmplitude * (0.4 + progressY * 0.6);
           const waveOffset =
             Math.sin(
-              (endY / height) * Math.PI * harmonicWaveFrequency +
-                Math.PI * 0.25,
+              (endY / height) * Math.PI * harmonicWaveFrequency + Math.PI * 0.25
             ) * dynamicAmplitude;
 
           // Line starts at the right edge of the segment with wave offset
@@ -211,7 +225,7 @@ WavyFunnel10.propTypes = {
     PropTypes.shape({
       label: PropTypes.string.isRequired,
       value: PropTypes.number.isRequired,
-    }),
+    })
   ),
   width: PropTypes.number,
   height: PropTypes.number,

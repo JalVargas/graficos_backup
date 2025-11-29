@@ -36,8 +36,6 @@
 }
 
 .funnel-10-path:hover,
-.funnel-10-path:focus-visible,
-.funnel-10-path:active {
   filter: brightness(1.12) drop-shadow(0 4px 18px rgba(68, 153, 149, 0.22));
   transform: scaleX(1.15) scaleY(1.11) translateX(10px) translateY(-3px)
     skewY(-2deg);
