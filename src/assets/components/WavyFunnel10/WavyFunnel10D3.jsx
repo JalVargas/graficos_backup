@@ -10,14 +10,9 @@ const defaultColors = [
 ];
 
 function WavyFunnel10D3({ data = [], width = 580, height = 550 }) {
-  if (!data || data.length === 0) {
-    return <div>No hay datos para mostrar</div>;
-  }
-
   const padding = { right: 140 };
   const funnelWidth = width - padding.right;
   const segmentHeight = (height - (data.length - 1)) / data.length;
-
   const maxValue = Math.max(...data.map((d) => d.value));
 
   const segments = data.map((item, idx) => {
