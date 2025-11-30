@@ -95,10 +95,9 @@ export const WavyFunnel10logica = () => {
                   <h2 className="section-title">Full Conversion Funnel</h2>
                   <IconInfoCircle stroke={1.25} size={18} />
                 </div>
-                <WavyFunnel10
+                <WavyFunnel10D3
                   data={filterAndSort(thirdFunnelData)}
                   width={580}
-                  height={550}
                   waveAmplitude={15}
                   waveFrequency={7}
                   leftMargin={30}

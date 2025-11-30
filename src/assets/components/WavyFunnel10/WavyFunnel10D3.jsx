@@ -1,15 +1,21 @@
 const defaultColors = [
   "#449995", // Teal (Sessions)
   "#86C5A9", // Light Green (Vehicle Views)
-  "#EACD6D", // Yellow (True Leads)
   "#009B96", // Dark Teal
+  "#EACD6D", // Yellow (True Leads)
   "#DC5C1E", // Orange
   "#F1883C", // Light Orange
-  "#71C7A7", // Green
   "#EAB235", // Gold
 ];
 
-function WavyFunnel10D3({ data = [], width = 580, height = 550 }) {
+function WavyFunnel10D3({
+  data = [],
+  width = 580,
+  height = Array.isArray(data) ? data.length * 115 : 550,
+  className = "",
+  formatValue = (value) => value.toLocaleString(),
+  colors = defaultColors,
+}) {
   const padding = { right: 140 };
   const funnelWidth = width - padding.right;
   const segmentHeight = (height - (data.length - 1)) / data.length;
@@ -54,20 +60,17 @@ function WavyFunnel10D3({ data = [], width = 580, height = 550 }) {
 
     return (
       <g key={idx}>
-        <path
-          d={pathD}
-          fill={item.color || defaultColors[idx % defaultColors.length]}
-        />
+        <path d={pathD} fill={item.color || colors[idx % colors.length]} />
         <text
           x={labelX}
           y={valueY}
           className="funnel-value-right"
-          fill={item.color || defaultColors[idx % defaultColors.length]}
+          fill={item.color || colors[idx % colors.length]}
           fontFamily="Roboto"
           fontWeight="700"
           fontSize="22px"
         >
-          {item.value.toLocaleString()}
+          {formatValue(item.value)}
         </text>
         <text
           x={labelX}
@@ -95,7 +98,12 @@ function WavyFunnel10D3({ data = [], width = 580, height = 550 }) {
   });
 
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      className={className}
+    >
       {segments}
     </svg>
   );
