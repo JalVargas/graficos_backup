@@ -1,7 +1,3 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { area } from "d3-shape";
-
 const defaultColors = [
   "#449995", // Teal (Sessions)
   "#86C5A9", // Light Green (Vehicle Views)
@@ -13,107 +9,101 @@ const defaultColors = [
   "#EAB235", // Gold
 ];
 
-/**
- * Funnel segment with d3-area (lado izquierdo recto, derecho ondulado)
- */
-function WavyFunnel10D3({
-  data = [],
-  width = 580,
-  height = 550,
-  waveAmplitude = 15,
-  waveFrequency = 6,
-  leftMargin = 30,
-  segmentGap = 0,
-}) {
+function WavyFunnel10D3({ data = [], width = 580, height = 550 }) {
   if (!data || data.length === 0) {
     return <div>No hay datos para mostrar</div>;
   }
 
   const padding = { right: 140 };
-  const funnelWidth = width - leftMargin - padding.right;
-  const segmentHeight = (height - (data.length - 1) * segmentGap) / data.length;
+  const funnelWidth = width - padding.right;
+  const segmentHeight = (height - (data.length - 1)) / data.length;
 
-  // Calcula la onda para el borde derecho
-  const getWaveOffset = (y) => {
-    const progressY = y / height;
-    const dynamicAmplitude = waveAmplitude * (0.4 + progressY * 0.6);
-    return (
-      Math.sin(progressY * Math.PI * waveFrequency + Math.PI * 0.25) *
-      dynamicAmplitude
-    );
-  };
+  const maxValue = Math.max(...data.map((d) => d.value));
 
-  // Calcula el ancho del segmento en Y
-  const getWidthAtY = (startWidth, endWidth, startY, endY, y) => {
-    const progress = (y - startY) / (endY - startY);
-    return startWidth + (endWidth - startWidth) * progress;
-  };
-
-  // Genera los paths de cada segmento
-  const paths = data.map((item, idx) => {
-    const maxWidth = funnelWidth;
-    const minWidth = maxWidth * 0.08;
-    const startWidth = maxWidth - (idx / data.length) * (maxWidth - minWidth);
+  const segments = data.map((item, idx) => {
+    const startWidth = (data[idx].value / maxValue) * funnelWidth;
     const endWidth =
-      maxWidth - ((idx + 1) / data.length) * (maxWidth - minWidth);
-    const startY = idx * (segmentHeight + segmentGap);
+      idx < data.length - 1
+        ? (data[idx + 1].value / maxValue) * funnelWidth
+        : (data[idx].value / maxValue) * funnelWidth * 0.8;
+    const startY = idx * segmentHeight;
     const endY = startY + segmentHeight;
-    const N = 32; // puntos para suavidad
 
-    // Lado izquierdo (recto)
-    const leftSide = Array.from({ length: N }, (_, i) => {
-      const y = startY + ((endY - startY) * i) / (N - 1);
-      return [leftMargin, y];
-    });
+    const x0 = 0;
+    const x1Start = startWidth;
+    const x1End = endWidth;
 
-    // Lado derecho (ondulado)
-    const rightSide = Array.from({ length: N }, (_, i) => {
-      const y = endY - ((endY - startY) * i) / (N - 1);
-      const widthAtY = getWidthAtY(startWidth, endWidth, startY, endY, y);
-      const wave = getWaveOffset(y);
-      return [leftMargin + widthAtY + wave, y];
-    });
+    const isLastSegment = idx === data.length - 1;
+    const curveIntensity = 0.66;
+    const curveHeight = segmentHeight * curveIntensity;
 
-    // Área cerrada (lado izquierdo + derecho)
-    const points = [...leftSide, ...rightSide];
+    /**
+     * M: Move to left-top corner
+     * L: Line to right-top corner
+     * C: Cubic Bézier curve to right-bottom (creates the S-shape)
+     * L: Line back to left-bottom
+     * Z: Close path
+     */
+    const pathD = `
+      M ${x0} ${startY}
+      L ${x1Start} ${startY}
+      C ${x1Start} ${startY + curveHeight}, ${x1End} ${endY - curveHeight}, ${x1End} ${endY}
+      L ${x0} ${endY}
+      Z
+    `;
 
-    // d3-area espera arrays de [x, y]
-    const areaGen = area()
-      .x((d) => d[0])
-      .y((d) => d[1]);
+    const labelX = width - padding.right - 30;
+    const lineStartX = endWidth;
+    const valueY = endY - 30;
+    const labelY = endY - 12;
 
     return (
-      <path
-        key={idx}
-        d={areaGen(points)}
-        fill={item.color || defaultColors[idx % defaultColors.length]}
-        stroke="#fff"
-        strokeWidth={1.5}
-      />
+      <g key={idx}>
+        <path
+          d={pathD}
+          fill={item.color || defaultColors[idx % defaultColors.length]}
+        />
+        <text
+          x={labelX}
+          y={valueY}
+          className="funnel-value-right"
+          fill={item.color || defaultColors[idx % defaultColors.length]}
+          fontFamily="Roboto"
+          fontWeight="700"
+          fontSize="22px"
+        >
+          {item.value.toLocaleString()}
+        </text>
+        <text
+          x={labelX}
+          y={labelY}
+          className="funnel-label-right"
+          fill="#2d3a3f"
+          fontFamily="Roboto"
+          fontSize="14px"
+        >
+          {item.label}
+        </text>
+        {!isLastSegment && (
+          <line
+            x1={lineStartX}
+            y1={endY}
+            x2={width - padding.right * 0.5}
+            y2={endY}
+            stroke="#d3e2e8"
+            className="connector-line"
+            strokeWidth="1"
+          />
+        )}
+      </g>
     );
   });
 
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
-      {paths}
+      {segments}
     </svg>
   );
 }
-
-WavyFunnel10D3.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      value: PropTypes.number.isRequired,
-      color: PropTypes.string,
-    })
-  ),
-  width: PropTypes.number,
-  height: PropTypes.number,
-  waveAmplitude: PropTypes.number,
-  waveFrequency: PropTypes.number,
-  leftMargin: PropTypes.number,
-  segmentGap: PropTypes.number,
-};
 
 export default WavyFunnel10D3;

@@ -4,6 +4,7 @@ import WavyFunnel10 from "./WavyFunnel10";
 import { IconInfoCircle, IconMinus } from "@tabler/icons-react";
 import LabelYValue from "../WavyFunnel/LabelYvalue";
 import "../../../App.css";
+import WavyFunnel10D3 from "./WavyFunnel10D3";
 
 export const WavyFunnel10logica = () => {
   const [initialData, setInitialData] = useState([
@@ -48,7 +49,7 @@ export const WavyFunnel10logica = () => {
                   <h2 className="section-title">Website Traffic</h2>
                   <IconInfoCircle stroke={1.25} size={18} />
                 </div>
-                <WavyFunnel
+                <WavyFunnel10D3
                   data={filterAndSort(initialData)}
                   width={450}
                   height={350}
